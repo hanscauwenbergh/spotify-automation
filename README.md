@@ -1,1 +1,1 @@
-# spotify-automation
+# Spotify automation
