@@ -1,8 +1,9 @@
-package commands
+package com.hanscauwenbergh.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
+import com.hanscauwenbergh.common.*
 import common.*
 
 class RefreshRecentSelectionCommand : CliktCommand(name = "RefreshRecentSelection") {

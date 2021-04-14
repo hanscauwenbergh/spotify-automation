@@ -1,4 +1,4 @@
-package common
+package com.hanscauwenbergh.common
 
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.models.SavedTrack

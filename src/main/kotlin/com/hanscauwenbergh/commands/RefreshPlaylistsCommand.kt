@@ -1,4 +1,4 @@
-package commands
+package com.hanscauwenbergh.commands
 
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.models.SavedTrack
@@ -6,6 +6,7 @@ import com.adamratzman.spotify.models.SimplePlaylist
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
+import com.hanscauwenbergh.common.*
 import common.*
 import kotlinx.coroutines.runBlocking
 

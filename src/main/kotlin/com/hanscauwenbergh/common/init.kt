@@ -1,4 +1,4 @@
-package common
+package com.hanscauwenbergh.common
 
 import com.adamratzman.spotify.SpotifyScope
 import com.adamratzman.spotify.SpotifyUserAuthorization

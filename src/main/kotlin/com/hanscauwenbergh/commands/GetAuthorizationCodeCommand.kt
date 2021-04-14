@@ -1,10 +1,10 @@
-package commands
+package com.hanscauwenbergh.commands
 
 import com.adamratzman.spotify.getSpotifyAuthorizationUrl
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
-import common.scopes
+import com.hanscauwenbergh.common.scopes
 
 class GetAuthorizationCodeCommand : CliktCommand(name = "GetAuthorizationCode") {
 

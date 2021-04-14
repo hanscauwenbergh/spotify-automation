@@ -2,7 +2,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.4.10'
 }
 
-group 'org.example'
+group 'com.hanscauwenbergh'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -23,7 +23,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org.example.ApplicationKt'
+        attributes 'Main-Class': 'com.hanscauwenbergh.ApplicationKt'
     }
 
     // This line of code recursively collects and copies all of a project's files
