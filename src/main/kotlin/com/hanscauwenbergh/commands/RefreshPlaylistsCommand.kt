@@ -9,6 +9,17 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.hanscauwenbergh.common.*
 import kotlinx.coroutines.runBlocking
 
+/*
+TODO
+- playlist descriptions
+- refactor (type alias List<SavedTrack> = Selection)
+- optimize date diff splitting
+- testing
+- trigger on new track added for recent selection
+- trigger weekly/bimonthly for random selection
+- track attribute based playlists
+*/
+
 class RefreshPlaylistsCommand : CliktCommand(name = "RefreshPlaylists") {
 
     private val clientId: String by option(help = "Client ID").required()
