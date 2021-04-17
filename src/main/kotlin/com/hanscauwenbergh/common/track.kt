@@ -6,6 +6,8 @@ import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
+fun SpotifyClientApi.getAllSavedTracks() = getLatestSavedTracks(Integer.MAX_VALUE)
+
 fun SpotifyClientApi.getLatestSavedTracks(maxAmount: Int): List<SavedTrack> {
 
     val savedTracks = mutableListOf<SavedTrack>()
