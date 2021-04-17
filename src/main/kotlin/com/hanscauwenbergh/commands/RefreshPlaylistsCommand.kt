@@ -50,7 +50,7 @@ class RefreshPlaylistsCommand : CliktCommand(name = "RefreshPlaylists") {
 
     private fun List<SavedTrack>.splitIfMoreThanDaysInBetweenAddedAt() = groupConsecutiveBy { savedTrack1, savedTrack2 ->
 
-        val daysBetweenAdding = calculateDaysBetweenAdding(savedTrack1, savedTrack2)
+        val daysBetweenAdding = calculateDaysBetweenSaving(savedTrack1, savedTrack2)
 
         return@groupConsecutiveBy daysBetweenAdding <= 7
     }

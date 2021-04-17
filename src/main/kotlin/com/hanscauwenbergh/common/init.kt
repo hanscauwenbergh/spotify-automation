@@ -7,9 +7,9 @@ import com.adamratzman.spotify.spotifyClientApi
 import kotlinx.coroutines.runBlocking
 
 val scopes = arrayOf(
+    SpotifyScope.USER_LIBRARY_READ,
     SpotifyScope.PLAYLIST_READ_PRIVATE,
-    SpotifyScope.PLAYLIST_MODIFY_PRIVATE,
-    SpotifyScope.USER_LIBRARY_READ
+    SpotifyScope.PLAYLIST_MODIFY_PRIVATE
 )
 
 fun initializeApi(

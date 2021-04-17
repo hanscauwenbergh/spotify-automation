@@ -6,9 +6,9 @@ import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
-fun SpotifyClientApi.getAllSavedTracks() = getRecentlySavedTracks(Integer.MAX_VALUE)
+fun SpotifyClientApi.getAllSavedTracks() = getLatestSavedTracks(Integer.MAX_VALUE)
 
-fun SpotifyClientApi.getRecentlySavedTracks(maxAmount: Int): List<SavedTrack> {
+fun SpotifyClientApi.getLatestSavedTracks(maxAmount: Int): List<SavedTrack> {
 
     val savedTracks = mutableListOf<SavedTrack>()
 
@@ -34,7 +34,7 @@ fun SpotifyClientApi.getRecentlySavedTracks(maxAmount: Int): List<SavedTrack> {
 
 private val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
-fun calculateDaysBetweenAdding(savedTrack1: SavedTrack, savedTrack2: SavedTrack): Int {
+fun calculateDaysBetweenSaving(savedTrack1: SavedTrack, savedTrack2: SavedTrack): Int {
 
     val track1AddedAt = format.parse(savedTrack1.addedAt)
     val track2AddedAt = format.parse(savedTrack2.addedAt)

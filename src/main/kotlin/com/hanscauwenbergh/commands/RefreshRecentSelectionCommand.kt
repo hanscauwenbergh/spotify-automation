@@ -7,9 +7,11 @@ import com.hanscauwenbergh.common.*
 
 class RefreshRecentSelectionCommand : CliktCommand(name = "RefreshRecentSelection") {
 
-    private val recentSelectionPlaylistName = "Recent selection"
     private val minNumberOfTracks = 20
     private val maxNumberOfTracks = 40
+
+    private val recentSelectionPlaylistName = "Recent selection"
+    private val recentSelectionPlaylistDescription = "Selection of latest saved library tracks (min. ${minNumberOfTracks}, max. ${maxNumberOfTracks})"
 
     private val clientId: String by option(help = "Client ID").required()
     private val clientSecret: String by option(help = "Client Secret").required()
@@ -28,28 +30,28 @@ class RefreshRecentSelectionCommand : CliktCommand(name = "RefreshRecentSelectio
             scopes = scopes,
         )
 
-        val recentlySavedTracks = api.getRecentlySavedTracks(maxAmount = maxNumberOfTracks)
+        val latestSavedTracks = api.getLatestSavedTracks(maxAmount = maxNumberOfTracks)
 
-        val maxDaysBetweenAdding = recentlySavedTracks
+        val maxDaysBetweenSaving = latestSavedTracks
             .subList(minNumberOfTracks, maxNumberOfTracks)
             .zipWithNext { savedTrack1, savedTrack2 ->
-                calculateDaysBetweenAdding(savedTrack1, savedTrack2)
+                calculateDaysBetweenSaving(savedTrack1, savedTrack2)
             }
             .maxOrNull()
 
-        val selectedRecentTrackIds = recentlySavedTracks
+        val selectedLatestTrackIds = latestSavedTracks
             .zipWithNext()
             .dropLastWhile { (savedTrack1, savedTrack2) ->
-                calculateDaysBetweenAdding(savedTrack1, savedTrack2) != maxDaysBetweenAdding
+                calculateDaysBetweenSaving(savedTrack1, savedTrack2) != maxDaysBetweenSaving
             }
             .map { (savedTrack1, _) -> savedTrack1.track.id }
 
         val recentSelectionPlaylistId = api.getExistingPlaylistId(name = recentSelectionPlaylistName)
-            ?: api.createPlaylist(name = recentSelectionPlaylistName).id
+            ?: api.createPlaylist(name = recentSelectionPlaylistName, description = recentSelectionPlaylistDescription).id
 
         api.replacePlaylistTracks(
             playlistId = recentSelectionPlaylistId,
-            trackIds = selectedRecentTrackIds,
+            trackIds = selectedLatestTrackIds,
         )
     }
 }
