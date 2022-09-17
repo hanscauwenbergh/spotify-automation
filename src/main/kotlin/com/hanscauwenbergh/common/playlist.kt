@@ -4,9 +4,11 @@ import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.models.SimplePlaylist
 import kotlinx.coroutines.runBlocking
 
-fun SpotifyClientApi.getExistingPlaylistId(name: String) = this
+fun SpotifyClientApi.getExistingPlaylist(name: String) = this
     .getAllPlaylists()
-    .singleOrNull { playlist -> playlist.name == name }?.id
+    .singleOrNull { playlist -> playlist.name == name }
+
+fun SpotifyClientApi.getExistingPlaylistId(name: String) = getExistingPlaylist(name)?.id
 
 fun SpotifyClientApi.getAllPlaylists(): List<SimplePlaylist> {
 
@@ -43,8 +45,28 @@ fun SpotifyClientApi.createPlaylist(name: String, description: String = "") = ru
 }
 
 fun SpotifyClientApi.replacePlaylistTracks(playlistId: String, trackIds: List<String>) = runBlocking {
+
+    if (trackIds.isEmpty()) {
+        return@runBlocking
+    }
+
+    val windowedTrackIds = trackIds.windowed(
+        size = 100,
+        step = 100,
+        partialWindows = true
+    )
+
     playlists.replaceClientPlaylistTracks(
         playlist = playlistId,
-        tracks = trackIds.toTypedArray()
+        tracks = windowedTrackIds[0].toTypedArray()
     )
+
+    windowedTrackIds
+        .subList(1, windowedTrackIds.size)
+        .forEach {
+            playlists.addTracksToClientPlaylist(
+                playlist = playlistId,
+                tracks = it.toTypedArray()
+            )
+        }
 }
