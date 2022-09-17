@@ -58,7 +58,7 @@ class RefreshMorningSelectionCommand : CliktCommand(name = "RefreshMorningSelect
 
         api.replacePlaylistTracks(
             playlistId = morningSelectionPlaylist.id,
-            trackIds = selectedTracks.map { (track, _) -> track.id },
+            tracks = selectedTracks.map { (track, _) -> track },
         )
     }
 

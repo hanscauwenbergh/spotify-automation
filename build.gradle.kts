@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.4.31"
+    id("org.jetbrains.kotlin.jvm") version "1.7.20-RC"
 }
 
 group = "com.hanscauwenbergh"
@@ -19,7 +19,6 @@ dependencies {
     implementation("io.ktor:ktor-client-core-jvm:1.5.3")
     implementation("io.ktor:ktor-client-json:1.5.3")
     implementation("io.ktor:ktor-client-jackson:1.5.3")
-    compile("io.ktor:ktor-server-netty:2.1.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("org.assertj:assertj-core:3.12.2")

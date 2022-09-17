@@ -39,19 +39,19 @@ class RefreshRecentSelectionCommand : CliktCommand(name = "RefreshRecentSelectio
             }
             .maxOrNull()
 
-        val selectedLatestTrackIds = latestSavedTracks
+        val selectedLatestTracks = latestSavedTracks
             .zipWithNext()
             .dropLastWhile { (savedTrack1, savedTrack2) ->
                 calculateDaysBetweenSaving(savedTrack1, savedTrack2) != maxDaysBetweenSaving
             }
-            .map { (savedTrack1, _) -> savedTrack1.track.id }
+            .map { (savedTrack, _) -> savedTrack.track }
 
         val recentSelectionPlaylistId = api.getExistingPlaylistId(name = recentSelectionPlaylistName)
             ?: api.createPlaylist(name = recentSelectionPlaylistName, description = recentSelectionPlaylistDescription).id
 
         api.replacePlaylistTracks(
             playlistId = recentSelectionPlaylistId,
-            trackIds = selectedLatestTrackIds,
+            tracks = selectedLatestTracks,
         )
     }
 }

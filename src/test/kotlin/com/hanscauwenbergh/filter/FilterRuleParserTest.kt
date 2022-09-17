@@ -1,6 +1,5 @@
 package com.hanscauwenbergh.filter
 
-import com.hanscauwenbergh.common.*
 import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach

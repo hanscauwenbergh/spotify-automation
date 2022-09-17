@@ -2,6 +2,7 @@ package com.hanscauwenbergh.common
 
 import com.adamratzman.spotify.SpotifyClientApi
 import com.adamratzman.spotify.models.SimplePlaylist
+import com.adamratzman.spotify.models.Track
 import kotlinx.coroutines.runBlocking
 
 fun SpotifyClientApi.getExistingPlaylist(name: String) = this
@@ -44,29 +45,33 @@ fun SpotifyClientApi.createPlaylist(name: String, description: String = "") = ru
     )
 }
 
-fun SpotifyClientApi.replacePlaylistTracks(playlistId: String, trackIds: List<String>) = runBlocking {
+fun SpotifyClientApi.replacePlaylistTracks(playlistId: String, tracks: List<Track>) = runBlocking {
 
-    if (trackIds.isEmpty()) {
+    if (tracks.isEmpty()) {
         return@runBlocking
     }
 
-    val windowedTrackIds = trackIds.windowed(
-        size = 100,
-        step = 100,
-        partialWindows = true
-    )
+    val windowedTrackUris = tracks
+        .map { track -> track.uri }
+        .windowed(
+            size = 100,
+            step = 100,
+            partialWindows = true
+        )
 
-    playlists.replaceClientPlaylistTracks(
+    // replaceClientPlaylistTracks
+    playlists.replaceClientPlaylistPlayables(
         playlist = playlistId,
-        tracks = windowedTrackIds[0].toTypedArray()
+        playables = windowedTrackUris[0].toTypedArray()
     )
 
-    windowedTrackIds
-        .subList(1, windowedTrackIds.size)
-        .forEach {
-            playlists.addTracksToClientPlaylist(
+    windowedTrackUris
+        .subList(1, windowedTrackUris.size)
+        .forEach { windowTrackUris ->
+            // addTracksToClientPlaylist
+            playlists.addPlayablesToClientPlaylist(
                 playlist = playlistId,
-                tracks = it.toTypedArray()
+                playables = windowTrackUris.toTypedArray()
             )
         }
 }
