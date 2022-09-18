@@ -3,6 +3,7 @@ package com.hanscauwenbergh.commands
 import com.adamratzman.spotify.models.AudioFeatures
 import com.adamratzman.spotify.models.Track
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.hanscauwenbergh.common.*
@@ -17,6 +18,7 @@ class RefreshMorningSelectionCommand : CliktCommand(name = "RefreshMorningSelect
     private val redirectUri: String by option(help = "Redirect URI").required()
     private val accessToken: String by option(help = "Access Token").required()
     private val refreshToken: String by option(help = "Refresh Token").required()
+    private val shouldRebuild: Boolean by option(help = "Rebuild playlist from scratch").flag(default = false)
 
     private val filterRuleParser = FilterRuleParser()
 
@@ -43,23 +45,45 @@ class RefreshMorningSelectionCommand : CliktCommand(name = "RefreshMorningSelect
 
         val filterRules = filterRuleParser.parseFilterRules(description)
 
-        val tracks = api
-            .getAllSavedTracks()
-            .map { savedTrack -> savedTrack.track }
+        val savedTracks = if (shouldRebuild) {
+            api.getAllSavedTracks()
+        } else {
+            api.getLatestSavedTracks(50)
+        }
 
+        val tracks = savedTracks.map { savedTrack -> savedTrack.track }
         val tracksWithAudioFeatures = api.getTracksWithAudioFeatures(tracks)
 
-        val selectedTracks = tracksWithAudioFeatures
+        val selectedTracksWithAudioFeatures = tracksWithAudioFeatures
             .filter { (_, audioFeatures) ->
                 audioFeatures != null && filterRules.none { filterRule -> filterRule.filtersOut(audioFeatures) }
             }
 
 //        printInfo(selectedTracks)
 
-        api.replacePlaylistTracks(
-            playlistId = morningSelectionPlaylist.id,
-            tracks = selectedTracks.map { (track, _) -> track },
-        )
+        val selectedTracks = selectedTracksWithAudioFeatures.map { (track, _) -> track }
+
+        if (shouldRebuild) {
+            api.replacePlaylistTracks(
+                playlistId = morningSelectionPlaylist.id,
+                tracks = selectedTracks,
+            )
+        } else {
+
+            val existingPlaylistTrackIds = api
+                .getPlaylistTracks(morningSelectionPlaylist.id)
+                .distinctBy { it.id }
+                .map { it.id }
+
+            val newTracksToAppend = selectedTracks.filter { selectedTrack ->
+                selectedTrack.id !in existingPlaylistTrackIds
+            }
+
+            api.appendPlaylistTracks(
+                playlistId = morningSelectionPlaylist.id,
+                tracks = newTracksToAppend,
+            )
+        }
     }
 
     private fun printInfo(selectedTracks: List<Pair<Track, AudioFeatures?>>) {

@@ -1,6 +1,8 @@
 package com.hanscauwenbergh.common
 
 import com.adamratzman.spotify.SpotifyClientApi
+import com.adamratzman.spotify.models.Playable
+import com.adamratzman.spotify.models.PlaylistTrack
 import com.adamratzman.spotify.models.SimplePlaylist
 import com.adamratzman.spotify.models.Track
 import kotlinx.coroutines.runBlocking
@@ -59,7 +61,6 @@ fun SpotifyClientApi.replacePlaylistTracks(playlistId: String, tracks: List<Trac
             partialWindows = true
         )
 
-    // replaceClientPlaylistTracks
     playlists.replaceClientPlaylistPlayables(
         playlist = playlistId,
         playables = windowedTrackUris[0].toTypedArray()
@@ -68,7 +69,49 @@ fun SpotifyClientApi.replacePlaylistTracks(playlistId: String, tracks: List<Trac
     windowedTrackUris
         .subList(1, windowedTrackUris.size)
         .forEach { windowTrackUris ->
-            // addTracksToClientPlaylist
+            playlists.addPlayablesToClientPlaylist(
+                playlist = playlistId,
+                playables = windowTrackUris.toTypedArray()
+            )
+        }
+}
+
+fun SpotifyClientApi.getPlaylistTracks(playlistId: String): List<Playable> = runBlocking {
+
+    val playlistTracks = mutableListOf<PlaylistTrack>()
+
+    var trackOffset = 0
+    val trackLimit = 50
+    var trackNext: String?
+
+    do {
+
+        val pagedTracks = runBlocking {
+            playlists.getPlaylistTracks(
+                playlist = playlistId,
+                offset = trackOffset,
+                limit = trackLimit,
+            )
+        }
+        playlistTracks.addAll(pagedTracks.items)
+
+        trackOffset += trackLimit
+        trackNext = pagedTracks.next
+    } while (trackNext != null)
+
+    return@runBlocking playlistTracks.mapNotNull { playlistTrack -> playlistTrack.track }
+}
+
+fun SpotifyClientApi.appendPlaylistTracks(playlistId: String, tracks: List<Track>) = runBlocking {
+
+    tracks
+        .map { track -> track.uri }
+        .windowed(
+            size = 100,
+            step = 100,
+            partialWindows = true
+        )
+        .forEach { windowTrackUris ->
             playlists.addPlayablesToClientPlaylist(
                 playlist = playlistId,
                 playables = windowTrackUris.toTypedArray()
