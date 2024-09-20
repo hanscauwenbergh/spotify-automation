@@ -1,5 +1,6 @@
 package com.hanscauwenbergh.commands
 
+import com.adamratzman.spotify.models.Track
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
@@ -35,16 +36,15 @@ class RefreshRecentSelectionCommand : CliktCommand(name = "RefreshRecentSelectio
         val maxDaysBetweenSaving = latestSavedTracks
             .subList(minNumberOfTracks, maxNumberOfTracks)
             .zipWithNext { savedTrack1, savedTrack2 ->
-                calculateDaysBetweenSaving(savedTrack1, savedTrack2)
+                DaysBetweenSavedTracks(savedTrack1.track, savedTrack2.track, calculateDaysBetweenSaving(savedTrack1, savedTrack2))
             }
-            .maxOrNull()
+            .maxBy { it.daysBetweenSaving }
 
         val selectedLatestTracks = latestSavedTracks
-            .zipWithNext()
-            .dropLastWhile { (savedTrack1, savedTrack2) ->
-                calculateDaysBetweenSaving(savedTrack1, savedTrack2) != maxDaysBetweenSaving
+            .takeWhile { savedTrack ->
+                savedTrack.track.id != maxDaysBetweenSaving.savedTrack2.id
             }
-            .map { (savedTrack, _) -> savedTrack.track }
+            .map { savedTrack -> savedTrack.track }
 
         val recentSelectionPlaylistId = api.getExistingPlaylistId(name = recentSelectionPlaylistName)
             ?: api.createPlaylist(name = recentSelectionPlaylistName, description = recentSelectionPlaylistDescription).id
@@ -55,3 +55,9 @@ class RefreshRecentSelectionCommand : CliktCommand(name = "RefreshRecentSelectio
         )
     }
 }
+
+data class DaysBetweenSavedTracks(
+    val savedTrack1: Track,
+    val savedTrack2: Track,
+    val daysBetweenSaving: Int,
+)

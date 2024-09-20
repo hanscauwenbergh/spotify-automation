@@ -7,10 +7,11 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.hanscauwenbergh.common.scopes
 import io.ktor.client.*
-import io.ktor.client.features.json.*
-import io.ktor.client.request.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
+import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
 
 class GetTokensCommand : CliktCommand(name = "GetTokens") {
@@ -31,24 +32,22 @@ class GetTokensCommand : CliktCommand(name = "GetTokens") {
         val authorizationCode = readLine()!!
 
         val client = HttpClient {
-            install(JsonFeature) {
-                serializer = JacksonSerializer()
+            install(ContentNegotiation) {
+                jackson() // Jackson serializer setup
             }
         }
 
         val response: AuthorizationResponseBody = runBlocking {
-            client.post {
-                url("https://accounts.spotify.com/api/token")
-                body = FormDataContent(
-                    Parameters.build {
-                        append("client_id", clientId)
-                        append("client_secret", clientSecret)
-                        append("redirect_uri", redirectUri)
-                        append("grant_type", "authorization_code")
-                        append("code", authorizationCode)
-                    }
-                )
-            }
+            client.submitForm(
+                url = "https://accounts.spotify.com/api/token",
+                formParameters = Parameters.build {
+                    append("client_id", clientId)
+                    append("client_secret", clientSecret)
+                    append("redirect_uri", redirectUri)
+                    append("grant_type", "authorization_code")
+                    append("code", authorizationCode)
+                }
+            ).body()
         }
 
         with(response) {

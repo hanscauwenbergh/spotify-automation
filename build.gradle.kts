@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.7.20-RC"
+    id("org.jetbrains.kotlin.jvm") version "1.9.25"
 }
 
 group = "com.hanscauwenbergh"
@@ -15,10 +15,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("com.github.ajalt.clikt:clikt:3.1.0")
-    implementation("com.adamratzman:spotify-api-kotlin-core:3.8.7")
-    implementation("io.ktor:ktor-client-core-jvm:1.5.3")
-    implementation("io.ktor:ktor-client-json:1.5.3")
-    implementation("io.ktor:ktor-client-jackson:1.5.3")
+    implementation("com.adamratzman:spotify-api-kotlin-core:4.1.3")
+    implementation("io.ktor:ktor-client-core:2.0.3")
+    implementation("io.ktor:ktor-client-cio:2.0.3")
+    implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
+    implementation("io.ktor:ktor-serialization-jackson:2.0.3")
+    implementation("ch.qos.logback:logback-classic:1.2.7")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testImplementation("org.assertj:assertj-core:3.12.2")

@@ -93,7 +93,7 @@ class RefreshMorningSelectionCommand : CliktCommand(name = "RefreshMorningSelect
 
         selectedTracks.forEachIndexed { index, (track, audioFeatures) ->
 
-            println("${index + 1}. ${track.artists.joinToString(", ") { artist -> artist.name }} - ${track.name}")
+            println("${index + 1}. ${track.artists.joinToString(", ") { artist -> artist.name.toString() }} - ${track.name}")
             if (audioFeatures != null) {
                 with(audioFeatures) {
                     println("acousticness=$acousticness, danceability=$danceability, energy=$energy, instrumentalness=$instrumentalness, liveness=$liveness, loudness=$loudness, mode=$mode, speechiness=$speechiness, tempo=$tempo, timeSignature=$timeSignature, valence=$valence")

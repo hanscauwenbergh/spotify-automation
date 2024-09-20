@@ -7,9 +7,9 @@ import com.adamratzman.spotify.spotifyClientApi
 import kotlinx.coroutines.runBlocking
 
 val scopes = arrayOf(
-    SpotifyScope.USER_LIBRARY_READ,
-    SpotifyScope.PLAYLIST_READ_PRIVATE,
-    SpotifyScope.PLAYLIST_MODIFY_PRIVATE
+    SpotifyScope.UserLibraryRead,
+    SpotifyScope.PlaylistReadPrivate,
+    SpotifyScope.PlaylistModifyPrivate,
 )
 
 fun initializeApi(
@@ -24,16 +24,20 @@ fun initializeApi(
         clientId = clientId,
         clientSecret = clientSecret,
         redirectUri = redirectUri,
-        authorization = SpotifyUserAuthorization(
-            token = Token(
-                accessToken = accessToken,
-                tokenType = "Bearer",
-                expiresIn = 0,
-                refreshToken = refreshToken,
-                scopeString = scopes.joinToString(" "),
-            )
+        token = Token(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            expiresIn = 0,
+            tokenType = "Bearer",
         ),
-    ) {
-        automaticRefresh = true
-    }.build()
+//        authorization = SpotifyUserAuthorization(
+//            token = Token(
+//                accessToken = accessToken,
+//                tokenType = "Bearer",
+//                expiresIn = 0,
+//                refreshToken = refreshToken,
+//                scopeString = scopes.joinToString(" "),
+//            )
+//        ),
+    ).build()
 }
